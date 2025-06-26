@@ -10,11 +10,13 @@ Usage:
     from poshmark_scraper import PoshmarkScraper
 
     scraper = PoshmarkScraper(headless=True)
-    df = scraper.scrape(
-        n_samples=20,
-        max_pages=50,
-        category_url="https://poshmark.com/category/Women-Clothing"
-    )
+    scrape_dict = {
+        "Women":[2565, 1285],
+        "Men":[500, 250],
+        "Kids":[265, 135]
+    }
+    scraper.collect_listings(dict=scrape_dict, max_pages=50000)
+    df = scraper.scrape()
     print(df)
     df.to_csv("poshmark_sample.csv", index=False)
 """
