@@ -10,7 +10,7 @@ Usage:
     from poshmark_scraper import PoshmarkScraper
 
     scraper = PoshmarkScraper(headless=True)
-    scrape_dict = {
+    scrape_dict = {           //dict = {Department: [num unsold, num sold]}
         "Women":[2565, 1285],
         "Men":[500, 250],
         "Kids":[265, 135]
