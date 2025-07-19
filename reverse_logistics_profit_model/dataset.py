@@ -108,7 +108,7 @@ def preprocess_poshmark(path: Path) -> pd.DataFrame:
     )].copy()
 
     # 7) Normalize & impute text fields
-    text_cols = ["discounted_shipping","brand","department","categories"]  #removed color
+    text_cols = ["discounted_shipping","brand","department","categories", "sub_category"] 
     for c in text_cols:
         df[c] = (
             df[c].fillna("")
@@ -126,13 +126,16 @@ def preprocess_poshmark(path: Path) -> pd.DataFrame:
     all_tags = [tag for sublist in df['style_tags_list'] for tag in sublist]
     tag_df = count_cumulative_calc(pd.Series(all_tags))
     rare_lvl_grouping(pd.Series(all_tags), tag_df, 0.741)
+
+    subcat_df = count_cumulative_calc(df['sub_category'])
+    rare_lvl_grouping(df['sub_category'], subcat_df, 0.982)
  
 
     # 9) One-hot single-label categoricals
     df = pd.get_dummies(
         df,
-        columns=["discounted_shipping","brand","department","categories"],
-        prefix=["ship","brand","dept","cat"]
+        columns=["discounted_shipping","brand","department","categories", "sub_category"],
+        prefix=["ship","brand","dept","cat", "subcat"]
     )
 
     # Multi-label encode style_tags
@@ -154,7 +157,7 @@ def preprocess_poshmark(path: Path) -> pd.DataFrame:
     # Drop intermediates
     to_drop = [
         "url","category", "listing_date", "listing_price", "color", "sold","size",
-        "style_tags","style_tags_list", "color_list", "size", "days_since_listing"
+        "style_tags","style_tags_list", "color_list", "days_since_listing"
     ]
     df.drop(columns=[c for c in to_drop if c in df], inplace=True)
 
